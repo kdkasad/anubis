@@ -8,6 +8,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"strings"
 	"time"
@@ -147,6 +148,7 @@ func New(opts Options) (*Server, error) {
 
 	registerWithPrefix(anubis.APIPrefix+"pass-challenge", http.HandlerFunc(result.PassChallenge), "GET")
 	registerWithPrefix(anubis.APIPrefix+"check", http.HandlerFunc(result.maybeReverseProxyHttpStatusOnly), "")
+	registerWithPrefix(anubis.APIPrefix+"debug/pprof/", http.StripPrefix(strings.TrimSuffix(anubis.APIPrefix, "/"), http.HandlerFunc(pprof.Index)), "GET")
 	registerWithPrefix("/", http.HandlerFunc(result.maybeReverseProxyOrPage), "")
 
 	//goland:noinspection GoBoolExpressions
